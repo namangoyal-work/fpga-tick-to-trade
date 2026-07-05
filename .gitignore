@@ -1,0 +1,22 @@
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# cocotb / icarus
+tb/sim_build_*/
+tb/results.xml
+tb/*.fst
+tb/*.vcd
+
+# symbiyosys output directories (created next to the .sby files)
+formal/axis_skid/
+formal/trade_trigger/
+formal/sync_fifo/
+
+# vivado
+*.jou
+*.log
+.Xil/
+*.str
+vivado_*.backup.jou

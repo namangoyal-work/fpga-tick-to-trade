@@ -1,0 +1,15 @@
+# P1 fixed latency, P2 no-fire-without-validation, P3 risk cap.
+# Run from the repo root:  sby -f formal/trade_trigger.sby
+[options]
+mode prove
+depth 20
+
+[engines]
+smtbmc z3
+
+[script]
+read_verilog -sv -formal -DFORMAL trade_trigger.sv
+prep -top trade_trigger
+
+[files]
+rtl/trade_trigger.sv

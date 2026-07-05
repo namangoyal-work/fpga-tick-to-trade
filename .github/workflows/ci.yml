@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  simulate:
+    name: cocotb benches + golden-model fuzz (Icarus)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+      - name: Install Python dependencies
+        run: pip install -r tb/requirements.txt
+      - name: Run every bench and the fuzz campaign
+        run: make -C tb regress
+
+  formal:
+    name: SymbiYosys proofs (k-induction)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: YosysHQ/setup-oss-cad-suite@v3
+      - name: axis_skid — AXIS contract + single-slot invariant
+        run: sby -f formal/axis_skid.sby
+      - name: trade_trigger — fixed latency + no-fire-without-validation
+        run: sby -f formal/trade_trigger.sby
+      - name: sync_fifo — occupancy invariants
+        run: sby -f formal/sync_fifo.sby
+
+  lint:
+    name: elaborate all RTL (Icarus)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+      - name: Compile every module including the board wrapper
+        run: iverilog -g2012 -Irtl -o /dev/null rtl/*.sv

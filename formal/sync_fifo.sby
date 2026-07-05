@@ -1,0 +1,15 @@
+# Occupancy/flag invariants and pointer-count coherence.
+# Run from the repo root:  sby -f formal/sync_fifo.sby
+[options]
+mode prove
+depth 20
+
+[engines]
+smtbmc z3
+
+[script]
+read_verilog -sv -formal -DFORMAL sync_fifo.sv
+prep -top sync_fifo
+
+[files]
+rtl/sync_fifo.sv

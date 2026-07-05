@@ -1,0 +1,15 @@
+# AXI-Stream contract + single-slot invariant, proven by k-induction.
+# Run from the repo root:  sby -f formal/axis_skid.sby
+[options]
+mode prove
+depth 20
+
+[engines]
+smtbmc z3
+
+[script]
+read_verilog -sv -formal -DFORMAL axis_skid.sv
+prep -top axis_skid
+
+[files]
+rtl/axis_skid.sv
